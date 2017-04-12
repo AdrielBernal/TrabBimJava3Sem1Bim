@@ -47,7 +47,7 @@ public class SqlUtils {
 							tipoColuna = "SERIAL";
 						} else
 							tipoColuna = "INT";
-					} else {
+					}else {
 						tipoColuna = "DESCONHECIDO";
 					}
 					if (i > 0) {

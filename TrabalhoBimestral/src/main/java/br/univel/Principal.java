@@ -16,8 +16,8 @@ public class Principal {
 		SqlUtils sq = new SqlUtils();
 //		PreparedStatement ps = con.prepareStatement(sq.getSqlTable(o));
 //		ps.executeUpdate();
-//		 System.out.println(sq.getSqlTable(o));
-		 System.out.println(sq.getSqlInsert(o));
+		 System.out.println(sq.getSqlTable(o));
+//		 System.out.println(sq.getSqlInsert(o));
 //		 System.out.println(sq.getSqlSelectAll(o));
 //		 System.out.println(sq.getSqlSelectOne(o));
 //		 System.out.println(sq.getSqlDelete(o));
@@ -26,6 +26,8 @@ public class Principal {
 	}
 
 	public void conectar() {
+		
+		//jdbc:postgresql://localhost:aluno.dat
 		String url = "jdbc:postgresql://localhost:5432/postgres";
 		String user = "postgres";
 		String pass = "univel";
