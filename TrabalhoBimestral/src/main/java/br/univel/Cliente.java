@@ -6,7 +6,7 @@ import br.univel.anotations.Tabela;
 @Tabela("CLIENTE")
 public class Cliente {
 
-	@Coluna(pk = true)
+	@Coluna(nome="ID",pk = true)
 	private int id;
 
 	@Coluna(nome = "NOME")
