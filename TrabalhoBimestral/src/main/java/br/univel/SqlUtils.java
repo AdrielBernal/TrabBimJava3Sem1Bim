@@ -47,7 +47,7 @@ public class SqlUtils {
 							tipoColuna = "SERIAL";
 						} else
 							tipoColuna = "INT";
-					}else {
+					} else {
 						tipoColuna = "DESCONHECIDO";
 					}
 					if (i > 0) {
@@ -87,10 +87,7 @@ public class SqlUtils {
 		}
 	}
 
-	public String getSqlInsert(Object o) {
-		List lista=new ArrayList<>();
-		lista.add("xampson");
-		lista.add(2);
+	public String getSqlInsert(Object o, List lista) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("INSERT INTO ");
@@ -98,7 +95,7 @@ public class SqlUtils {
 		sb.append(" (");
 		sb.append(getAtributos(o));
 		sb.append(") VALUES (");
-		sb.append(getPar(o,lista));
+		sb.append(getPar(o, lista));
 		sb.append(");");
 
 		return sb.toString().toUpperCase();
@@ -114,14 +111,18 @@ public class SqlUtils {
 		return sb.toString().toUpperCase();
 	}
 
-	public String getSqlUpdate(Object o, String coluna) {
+	public String getSqlUpdate(Object o, String coluna, String valor, int id) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("UPDATE ");
 		sb.append(getNomeTabela(o));
-		sb.append(" SET ");
+		sb.append(" SET");
 		sb.append(coluna);
-		sb.append("= ? WHERE ID= ?;");
+		sb.append("= ");
+		sb.append(valor);
+		sb.append(" WHERE ID=");
+		sb.append(id);
+		sb.append(";");
 
 		return sb.toString().toUpperCase();
 	}
@@ -136,17 +137,27 @@ public class SqlUtils {
 		return sb.toString().toUpperCase();
 	}
 
-	public String getSqlSelectOne(Object o) {
+	public String getSqlSelectOne(Object o, int id) {
 
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("SELECT * FROM ");
-		sb.append(getNomeTabela(o) + " WHERE ID=?;");
+		sb.append(getNomeTabela(o));
+		sb.append(" WHERE ID=" + id + ";");
 
 		return sb.toString().toUpperCase();
 	}
 
-	private Object getPar(Object o,List valores) {
+	public String getSqlDrop(Object o) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("DROP TABLE ");
+		sb.append(getNomeTabela(o));
+		sb.append(";");
+		System.out.println(sb.toString());
+		return sb.toString();
+	}
+
+	private Object getPar(Object o, List valores) {
 		StringBuilder sb = new StringBuilder();
 		int qtd = o.getClass().getDeclaredFields().length;
 		for (int i = 0; i < qtd; i++) {

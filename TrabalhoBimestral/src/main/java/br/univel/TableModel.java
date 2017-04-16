@@ -7,51 +7,64 @@ import java.util.List;
 import javax.swing.plaf.synth.SynthSeparatorUI;
 import javax.swing.table.AbstractTableModel;
 
+import br.univel.anotations.Coluna;
+
 public class TableModel extends AbstractTableModel {
 
-	private String[][] xampson;
 	private List lista;
+	private Class<?> clazz;
+	private int colunas;
+	private List listaNome;
+	private String[][] mat;
 
-	public TableModel(Object o) {
-		Class<?> clazz = o.getClass();
-		lista = new ArrayList<>();
+	public TableModel(Object o, List list) {
+		clazz = o.getClass();
+		lista = list;
+		getListaNome();
+		colunas = 0;
 		for (Field f : clazz.getDeclaredFields()) {
-			lista.add(f);
+			colunas++;
 		}
-		xampson = new String[lista.size()][10];
-		for (int i = 0; i < lista.size(); i++) {
-			for (int j = 0; j < 10; j++) {
-				xampson[i][j] = "xampson"+i+j;
-				System.out.println(xampson[i][j]);
+		this.mat = new String[lista != null ? lista.size() : 0][colunas];
+		int count = 0;
+		for (int i = 0; i < (lista != null ? lista.size()/colunas : 0); i++) {
+			for (int j = 0; j < this.colunas; j++) {
+				mat[i][j] = lista.get(count).toString();
+				count++;
 			}
-
 		}
 
 	}
 
 	@Override
 	public int getColumnCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		return colunas;
 	}
 
 	@Override
 	public int getRowCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		return lista != null ? lista.size()/colunas : 0;
 	}
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		return xampson[rowIndex][columnIndex];
-	}
-	@Override
-	public String getColumnName(int column) {
-		return (String) lista.get(column);
+		return mat[rowIndex][columnIndex];
 	}
 
-	public static void main(String[] args) {
-		Cliente c = new Cliente();
-		new TableModel(c);
+	@Override
+	public String getColumnName(int column) {
+		return (String) listaNome.get(column);
 	}
+
+	public void getListaNome() {
+		listaNome = new ArrayList<>();
+		for (Field f : clazz.getDeclaredFields()) {
+			listaNome.add(f.getAnnotation(Coluna.class).nome().toString());
+		}
+	}
+
+	public void addNewRow() {
+		super.fireTableDataChanged();
+	}
+
 }

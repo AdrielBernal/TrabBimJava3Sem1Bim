@@ -11,18 +11,18 @@ public class Principal {
 	private Connection con;
 
 	public Principal() throws SQLException {
-//		conectar();
+		conectar();
 		Cliente o = new Cliente();
 		SqlUtils sq = new SqlUtils();
-//		PreparedStatement ps = con.prepareStatement(sq.getSqlTable(o));
-//		ps.executeUpdate();
+		PreparedStatement ps = con.prepareStatement(sq.getSqlTable(o));
+		ps.executeUpdate();
 		 System.out.println(sq.getSqlTable(o));
 //		 System.out.println(sq.getSqlInsert(o));
 //		 System.out.println(sq.getSqlSelectAll(o));
 //		 System.out.println(sq.getSqlSelectOne(o));
 //		 System.out.println(sq.getSqlDelete(o));
 //		 System.out.println(sq.getSqlUpdate(o, "NOME"));
-//		desconectar();
+		desconectar();
 	}
 
 	public void conectar() {
@@ -30,7 +30,7 @@ public class Principal {
 		//jdbc:postgresql://localhost:aluno.dat
 		String url = "jdbc:postgresql://localhost:5432/postgres";
 		String user = "postgres";
-		String pass = "univel";
+		String pass = "xampson";
 		try {
 			con = DriverManager.getConnection(url, user, pass);
 		} catch (SQLException ex) {
