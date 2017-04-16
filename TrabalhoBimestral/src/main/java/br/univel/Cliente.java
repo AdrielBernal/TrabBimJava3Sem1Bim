@@ -1,5 +1,7 @@
 package br.univel;
 
+import java.math.BigDecimal;
+
 import br.univel.anotations.Coluna;
 import br.univel.anotations.Tabela;
 
@@ -12,8 +14,11 @@ public class Cliente {
 	@Coluna(nome = "NOME")
 	private String nome;
 
-//	@Coluna(nome = "ENDERECO")
-//	private String endereco;
+	@Coluna(nome = "ENDERECO")
+	private int endereco;
+
+	@Coluna(nome = "bd")
+	private BigDecimal bd;
 
 	public int getId() {
 		return id;

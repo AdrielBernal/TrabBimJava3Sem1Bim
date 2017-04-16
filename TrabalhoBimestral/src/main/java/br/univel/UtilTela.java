@@ -29,21 +29,29 @@ public class UtilTela {
 
 	public JPanel gerarTela(Object o) {
 		b = new Banco(o);
-		JPanel painelContente = (JPanel) getPainelContente(o);
-
+		JPanel painelContente = new JPanel();
+		try {
+			painelContente = (JPanel) getPainelContente(o);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return painelContente;
 
 	}
 
-	private Container getPainelContente(Object o) {
+	private Container getPainelContente(Object o) throws SQLException {
 		int y = 0;
 		JPanel contentPane = new JPanel();
 		table = new JTable();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		GridBagLayout gbl_contentPane = new GridBagLayout();
-		gbl_contentPane.columnWidths = new int[] { 0, 0, 0, 0, 0 };
+		gbl_contentPane.columnWidths = get(o);
+		// gbl_contentPane.columnWidths = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		// 0 };
 		gbl_contentPane.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-		gbl_contentPane.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_contentPane.columnWeights = new double[] { 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5,
+				Double.MIN_VALUE };
 		gbl_contentPane.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 				0.0, Double.MIN_VALUE };
 		contentPane.setLayout(gbl_contentPane);
@@ -63,8 +71,14 @@ public class UtilTela {
 		btnAdicionar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					b.insert(listTxtField);
-
+					List<String> list = new ArrayList<>();
+					for (JTextField jTextField : listTxtField) {
+						list.add(jTextField.getText());
+					}
+					b.insert(list);
+					model = new TableModel(o, b.selectAll());
+					table.setModel(model);
+					cleanFields();
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
@@ -72,12 +86,13 @@ public class UtilTela {
 		});
 		contentPane.add(btnAdicionar, createConstraintsButton(0, y));
 
-		JButton btnBuscarTodos = new JButton("Search All");
+		JButton btnBuscarTodos = new JButton("Search by ID");
 		btnBuscarTodos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					model = new TableModel(o, b.selectAll());
+					model = new TableModel(o, b.selectOne(Integer.parseInt(listTxtField.get(0).getText())));
 					table.setModel(model);
+					cleanFields();
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
@@ -88,6 +103,15 @@ public class UtilTela {
 		JButton btnApagar = new JButton("Delete");
 		btnApagar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				try {
+					b.delete(Integer.parseInt(listTxtField.get(0).getText()));
+					model = new TableModel(o, b.selectAll());
+					table.setModel(model);
+					cleanFields();
+				} catch (NumberFormatException | SQLException e1) {
+					e1.printStackTrace();
+				}
+
 			}
 		});
 		contentPane.add(btnApagar, createConstraintsButton(2, y));
@@ -97,6 +121,8 @@ public class UtilTela {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					b.createTable();
+					model = new TableModel(o, b.selectAll());
+					table.setModel(model);
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
@@ -109,6 +135,8 @@ public class UtilTela {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					b.dropTable();
+					model = new TableModel(o, b.selectAll());
+					table.setModel(model);
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
@@ -117,7 +145,7 @@ public class UtilTela {
 		contentPane.add(btnDrop, createConstraintsButton(4, y));
 		JScrollPane scrollPane = new JScrollPane();
 		contentPane.add(scrollPane, createConstraintsScrollPanel(0, y + 1));
-		model = new TableModel(o, null);
+		model = new TableModel(o, b.selectAll());
 		table.setModel(model);
 		scrollPane.setViewportView(table);
 		return contentPane;
@@ -127,6 +155,7 @@ public class UtilTela {
 		GridBagConstraints gbc_textField = new GridBagConstraints();
 		gbc_textField.gridx = x;
 		gbc_textField.gridy = y;
+		gbc_textField.fill = GridBagConstraints.BOTH;
 		return gbc_textField;
 	}
 
@@ -134,18 +163,34 @@ public class UtilTela {
 		GridBagConstraints gbc_button = new GridBagConstraints();
 		gbc_button.gridx = x;
 		gbc_button.gridy = y;
-		gbc_button.fill = GridBagConstraints.HORIZONTAL;
+		gbc_button.fill = GridBagConstraints.BOTH;
 		return gbc_button;
 	}
 
 	private GridBagConstraints createConstraintsScrollPanel(int x, int y) {
 		GridBagConstraints gbc_schollPanel = new GridBagConstraints();
 		gbc_schollPanel.gridheight = 10;
-		gbc_schollPanel.gridwidth = 5;
+		gbc_schollPanel.gridwidth = 100;
 		gbc_schollPanel.fill = GridBagConstraints.BOTH;
 		gbc_schollPanel.gridx = x;
 		gbc_schollPanel.gridy = y;
 
 		return gbc_schollPanel;
+	}
+
+	public void cleanFields() {
+		for (JTextField f : listTxtField) {
+			f.setText("");
+		}
+	}
+
+	public int[] get(Object o) {
+		int count = o.getClass().getDeclaredFields().length;
+		int[] arrae = new int[count];
+		for (int i = 0; i < arrae.length; i++) {
+			arrae[i] = 0;
+		}
+		return arrae;
+
 	}
 }

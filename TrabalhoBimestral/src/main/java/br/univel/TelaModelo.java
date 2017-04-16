@@ -2,6 +2,7 @@ package br.univel;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -16,9 +17,6 @@ import java.lang.reflect.Field;
 
 public class TelaModelo extends JFrame {
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -32,12 +30,11 @@ public class TelaModelo extends JFrame {
 		});
 	}
 
-	/**
-	 * Create the frame.
-	 */
 	public TelaModelo() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
+		setPreferredSize(new Dimension(600, 600));
+		setMinimumSize(new Dimension(800, 600));
 		Cliente c1 = new Cliente();
 		setContentPane(new UtilTela().gerarTela(c1));
 	}

@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.JTextField;
+
 public class Banco {
 
 	private Connection con;
@@ -57,16 +59,11 @@ public class Banco {
 		ps.executeUpdate();
 	}
 
-	public Object selectOne(int id) throws SQLException {
+	public List selectOne(int id) throws SQLException {
 		PreparedStatement ps = con.prepareStatement(su.getSqlSelectOne(pojo, id));
-		return null;
-	}
-
-	public List selectAll() throws SQLException {
 		int cont = 1;
 		List list = new ArrayList();
 		Field[] f = pojo.getClass().getDeclaredFields();
-		PreparedStatement ps = con.prepareStatement(su.getSqlSelectAll(pojo));
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
 			cont = 1;
@@ -75,6 +72,29 @@ public class Banco {
 				cont++;
 			}
 
+		}
+		return list;
+	}
+
+	public List selectAll() {
+		PreparedStatement ps;
+		List list = new ArrayList();
+		try {
+			ps = con.prepareStatement(su.getSqlSelectAll(pojo));
+			int cont = 1;
+			Field[] f = pojo.getClass().getDeclaredFields();
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				cont = 1;
+				while (cont != f.length + 1) {
+					list.add(rs.getObject(cont));
+					cont++;
+				}
+
+			}
+
+		} catch (SQLException e) {
+			return list;
 		}
 		return list;
 	}
@@ -90,16 +110,9 @@ public class Banco {
 		desconectar();
 	}
 
-	// public static void main(String[] args) {
-	// Cliente c = new Cliente();
-	// Banco b = new Banco(c);
-	// b.conectar();
-	// try {
-	// b.createTable();
-	// } catch (SQLException e) {
-	// e.printStackTrace();
-	// }
-	// b.desconectar();
-	// }
+	public void delete(int id) throws SQLException {
+		PreparedStatement ps = con.prepareStatement(su.getSqlDelete(pojo, id));
+		ps.executeUpdate();
+	}
 
 }

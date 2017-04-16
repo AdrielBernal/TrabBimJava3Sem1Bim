@@ -1,7 +1,7 @@
 package br.univel;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.List;
 
 import br.univel.anotations.Coluna;
@@ -47,6 +47,8 @@ public class SqlUtils {
 							tipoColuna = "SERIAL";
 						} else
 							tipoColuna = "INT";
+					} else if (tipoParametro.equals(BigDecimal.class)) {
+						tipoColuna = "NUMERIC";
 					} else {
 						tipoColuna = "DESCONHECIDO";
 					}
@@ -127,12 +129,14 @@ public class SqlUtils {
 		return sb.toString().toUpperCase();
 	}
 
-	public String getSqlDelete(Object o) {
+	public String getSqlDelete(Object o, int id) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("DELETE FROM ");
 		sb.append(getNomeTabela(o));
-		sb.append(" WHERE ID= ? ;");
+		sb.append(" WHERE ID= ");
+		sb.append(id);
+		sb.append(";");
 
 		return sb.toString().toUpperCase();
 	}
@@ -153,17 +157,24 @@ public class SqlUtils {
 		sb.append("DROP TABLE ");
 		sb.append(getNomeTabela(o));
 		sb.append(";");
-		System.out.println(sb.toString());
 		return sb.toString();
 	}
 
 	private Object getPar(Object o, List valores) {
 		StringBuilder sb = new StringBuilder();
 		int qtd = o.getClass().getDeclaredFields().length;
-		for (int i = 0; i < qtd; i++) {
-			if (i > 0)
+		int i = 0;
+
+		for (Field f : o.getClass().getDeclaredFields()) {
+			if (i > 1)
 				sb.append(",");
-			sb.append(valores.get(i).toString());
+			if (f.getType().equals(String.class)) {
+				sb.append("'");
+				sb.append(valores.get(i));
+				sb.append("'");
+			} else
+				sb.append(valores.get(i));
+			i++;
 		}
 		return sb.toString();
 	}
@@ -172,9 +183,11 @@ public class SqlUtils {
 		StringBuilder sb = new StringBuilder();
 		int cont = 0;
 		for (Field f : o.getClass().getDeclaredFields()) {
-			if (cont > 0)
-				sb.append(",");
-			sb.append(f.getName());
+			if (!f.getName().contains("id")) {
+				if (cont > 1)
+					sb.append(",");
+				sb.append(f.getName());
+			}
 			cont++;
 		}
 		return sb.toString();

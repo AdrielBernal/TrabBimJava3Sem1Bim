@@ -4,7 +4,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.plaf.synth.SynthSeparatorUI;
 import javax.swing.table.AbstractTableModel;
 
 import br.univel.anotations.Coluna;
@@ -27,7 +26,7 @@ public class TableModel extends AbstractTableModel {
 		}
 		this.mat = new String[lista != null ? lista.size() : 0][colunas];
 		int count = 0;
-		for (int i = 0; i < (lista != null ? lista.size()/colunas : 0); i++) {
+		for (int i = 0; i < (lista != null ? lista.size() / colunas : 0); i++) {
 			for (int j = 0; j < this.colunas; j++) {
 				mat[i][j] = lista.get(count).toString();
 				count++;
@@ -43,7 +42,7 @@ public class TableModel extends AbstractTableModel {
 
 	@Override
 	public int getRowCount() {
-		return lista != null ? lista.size()/colunas : 0;
+		return lista != null ? lista.size() / colunas : 0;
 	}
 
 	@Override
@@ -61,10 +60,6 @@ public class TableModel extends AbstractTableModel {
 		for (Field f : clazz.getDeclaredFields()) {
 			listaNome.add(f.getAnnotation(Coluna.class).nome().toString());
 		}
-	}
-
-	public void addNewRow() {
-		super.fireTableDataChanged();
 	}
 
 }
