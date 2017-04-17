@@ -59,10 +59,10 @@ public class UtilTela {
 		listTxtField = new ArrayList<>();
 		for (Field f : clazz.getDeclaredFields()) {
 			JLabel lblNovaLabel = new JLabel(f.getAnnotation(Coluna.class).nome());
-			contentPane.add(lblNovaLabel, createConstraints(y, 0));
+			contentPane.add(lblNovaLabel, createConstraints(0, y));
 			y++;
 			JTextField JCampo = new JTextField(10);
-			contentPane.add(JCampo, createConstraints(y, 0));
+			contentPane.add(JCampo, createConstraints(0, y));
 			listTxtField.add(JCampo);
 			y++;
 		}

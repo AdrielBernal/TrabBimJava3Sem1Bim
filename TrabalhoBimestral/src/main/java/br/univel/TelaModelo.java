@@ -36,7 +36,8 @@ public class TelaModelo extends JFrame {
 		setPreferredSize(new Dimension(600, 600));
 		setMinimumSize(new Dimension(800, 600));
 		Cliente c1 = new Cliente();
-		setContentPane(new UtilTela().gerarTela(c1));
+		Animal a=new Animal();
+		setContentPane(new UtilTela().gerarTela(a));
 	}
 
 }

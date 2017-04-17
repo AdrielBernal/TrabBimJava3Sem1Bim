@@ -99,8 +99,7 @@ public class SqlUtils {
 		sb.append(") VALUES (");
 		sb.append(getPar(o, lista));
 		sb.append(");");
-
-		return sb.toString().toUpperCase();
+		return sb.toString();
 	}
 
 	public String getSqlSelectAll(Object o) {
@@ -168,12 +167,15 @@ public class SqlUtils {
 		for (Field f : o.getClass().getDeclaredFields()) {
 			if (i > 1)
 				sb.append(",");
-			if (f.getType().equals(String.class)) {
+			if (f.getType().equals(String.class) && !f.getAnnotation(Coluna.class).pk()) {
 				sb.append("'");
 				sb.append(valores.get(i));
 				sb.append("'");
-			} else
-				sb.append(valores.get(i));
+			} else if (valores.get(i).equals("") && !f.getAnnotation(Coluna.class).pk()) {
+				sb.append(0);
+			} else {
+				valores.get(i);
+			}
 			i++;
 		}
 		return sb.toString();

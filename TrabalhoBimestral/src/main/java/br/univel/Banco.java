@@ -20,7 +20,6 @@ public class Banco {
 	private Object pojo;
 
 	public Banco(Object o) {
-		conectar();
 		pojo = o;
 		su = new SqlUtils();
 	}
@@ -29,7 +28,8 @@ public class Banco {
 
 		String url = "jdbc:postgresql://localhost:5432/postgres";
 		String user = "postgres";
-		String pass = "xampson";
+		String pass = "postgres";
+
 		try {
 			con = DriverManager.getConnection(url, user, pass);
 		} catch (SQLException ex) {
@@ -43,23 +43,27 @@ public class Banco {
 			try {
 				con.close();
 			} catch (SQLException ex) {
-				Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+				Logger.getLogger(Banco.class.getName()).log(Level.SEVERE, null, ex);
 			}
 		}
 	}
 
 	public void createTable() throws SQLException {
+		conectar();
 		PreparedStatement ps = con.prepareStatement(su.getSqlTable(pojo));
 		ps.executeUpdate();
-
+		desconectar();
 	}
 
 	public void insert(List<?> lista) throws SQLException {
+		conectar();
 		PreparedStatement ps = con.prepareStatement(su.getSqlInsert(pojo, lista));
 		ps.executeUpdate();
+		desconectar();
 	}
 
 	public List selectOne(int id) throws SQLException {
+		conectar();
 		PreparedStatement ps = con.prepareStatement(su.getSqlSelectOne(pojo, id));
 		int cont = 1;
 		List list = new ArrayList();
@@ -73,10 +77,12 @@ public class Banco {
 			}
 
 		}
+		desconectar();
 		return list;
 	}
 
 	public List selectAll() {
+		conectar();
 		PreparedStatement ps;
 		List list = new ArrayList();
 		try {
@@ -96,23 +102,28 @@ public class Banco {
 		} catch (SQLException e) {
 			return list;
 		}
+		desconectar();
 		return list;
 	}
 
 	public void update(String coluna, String valor, int id) throws SQLException {
+		conectar();
 		PreparedStatement ps = con.prepareStatement(su.getSqlUpdate(pojo, coluna, valor, id));
-
+		desconectar();
 	}
 
 	public void dropTable() throws SQLException {
+		conectar();
 		PreparedStatement ps = con.prepareStatement(su.getSqlDrop(pojo));
 		ps.executeUpdate();
 		desconectar();
 	}
 
 	public void delete(int id) throws SQLException {
+		conectar();
 		PreparedStatement ps = con.prepareStatement(su.getSqlDelete(pojo, id));
 		ps.executeUpdate();
+		desconectar();
 	}
 
 }
