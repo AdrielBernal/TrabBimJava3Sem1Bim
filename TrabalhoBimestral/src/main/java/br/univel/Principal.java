@@ -1,61 +1,43 @@
 package br.univel;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.EventQueue;
 
-public class Principal {
-	private Connection con;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import java.awt.GridBagLayout;
+import javax.swing.JLabel;
+import java.awt.GridBagConstraints;
+import javax.swing.JTextField;
+import java.awt.Insets;
+import java.lang.reflect.Field;
 
-	public Principal() throws SQLException {
-		conectar();
-		Cliente o = new Cliente();
-		SqlUtils sq = new SqlUtils();
-		PreparedStatement ps = con.prepareStatement(sq.getSqlTable(o));
-		ps.executeUpdate();
-		 System.out.println(sq.getSqlTable(o));
-//		 System.out.println(sq.getSqlInsert(o));
-//		 System.out.println(sq.getSqlSelectAll(o));
-//		 System.out.println(sq.getSqlSelectOne(o));
-//		 System.out.println(sq.getSqlDelete(o));
-//		 System.out.println(sq.getSqlUpdate(o, "NOME"));
-		desconectar();
-	}
-
-	public void conectar() {
-		
-		//jdbc:postgresql://localhost:aluno.dat
-		String url = "jdbc:postgresql://localhost:5432/postgres";
-		String user = "postgres";
-		String pass = "xampson";
-		try {
-			con = DriverManager.getConnection(url, user, pass);
-		} catch (SQLException ex) {
-			Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
-		}
-	}
-
-	public void desconectar() {
-		if (con != null) {
-
-			try {
-				con.close();
-			} catch (SQLException ex) {
-				Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
-			}
-
-		}
-	}
+public class Principal extends JFrame {
 
 	public static void main(String[] args) {
-		try {
-			new Principal();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Principal frame = new Principal();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
+
+	public Principal() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 450, 300);
+		setPreferredSize(new Dimension(600, 600));
+		setMinimumSize(new Dimension(800, 600));
+		Cliente c1 = new Cliente();
+		Animal a=new Animal();
+		setContentPane(new UtilTela().gerarTela(a));
+	}
+
 }
